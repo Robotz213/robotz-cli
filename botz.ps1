@@ -1,6 +1,6 @@
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("githubProject", "ls", "exec")]
+    [ValidateSet("githubProject", "listProject", "exec")]
     [string]$comando,
 
     [string]$path,
@@ -21,8 +21,30 @@ function ChangeDir {
     }
 }
 
-function ListArquivos {
-    Get-ChildItem
+function ListProjetosGithub {
+    $githubPath = "C:\Github"
+    if (-Not (Test-Path $githubPath)) {
+        Write-Host "A pasta $githubPath não existe."
+        return
+    }
+    $repos = Get-ChildItem -Path $githubPath -Directory | Where-Object {
+        Test-Path (Join-Path $_.FullName ".git")
+    }
+    $count = $repos.Count
+    Write-Host "Foram encontrados $count projetos com .git na pasta $githubPath."
+    foreach ($repo in $repos) {
+        $gitDir = Join-Path $repo.FullName ".git"
+        $configPath = Join-Path $gitDir "config"
+        if (Test-Path $configPath) {
+            $config = Get-Content $configPath
+            $originLine = $config | Where-Object { $_ -match 'url\s*=\s*(.+)$' }
+            if ($originLine -and ($originLine -match '/([^/]+?)(\.git)?$')) {
+                Write-Host $matches[1]
+                continue
+            }
+        }
+        Write-Host $repo.Name
+    }
 }
 
 function ExecutarComandoPersonalizado {
@@ -40,6 +62,7 @@ if (-not $comando) {
 
 switch ($comando) {
     "githubProject" { ChangeDir -Path $path }
+    "listProject" { ListProjetosGithub }
 }
 
 
@@ -47,8 +70,8 @@ switch ($comando) {
 # SIG # Begin signature block
 # MIII5QYJKoZIhvcNAQcCoIII1jCCCNICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU2j8wQ4B2XZx48EY6TeE0kjfc
-# KOKgggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQURQzS6EUSBm46dfbAf//jUzwA
+# rA+gggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
 # 9w0BAQsFADBPMRgwFgYKCZImiZPyLGQBGRYIaW50cmFuZXQxEzARBgoJkiaJk/Is
 # ZAEZFgNmbXYxHjAcBgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQTAeFw0yNTA2
 # MDIxNTAwNTVaFw0yNjA2MDIxNTAwNTVaMHAxGDAWBgoJkiaJk/IsZAEZFghpbnRy
@@ -86,11 +109,11 @@ switch ($comando) {
 # BgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQQITHgAAH9p7juDORnr5AQAAAAAf
 # 2jAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG
 # 9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIB
-# FTAjBgkqhkiG9w0BCQQxFgQUC5bo6aMS6nM3pNojiIVndtUsTxQwDQYJKoZIhvcN
-# AQEBBQAEggEAQbVKP6VDWLlkecNqJciNG/oNN1+qfcFwR78SLBN/NqlcZeMeJdSM
-# rRcBdORIkVDxyAvfMP4TsqTLG9WZk3vV3aZ6WMFlhQf4rEzmtkUz1l6VP2nQbZ3+
-# BW2AEttvk7PNTcT8p3bcJwSbIG2yqbeKmFkVkmTuKMALEjW7mffdBaxTyk1+IBNw
-# XqpFDn7QLHi2hm8/U0HSIAP6/dD5V8cJGDsr2PjEQnM1S669H4d3/xaYAvfnBWz2
-# gmzQ4KszcbBAUDiy+OejxiAcU6Qdlicm9waOFwICx3Ry94AxypuGIEUBDV1sAokb
-# uRCvcdjQJDpKjzwwSd49G6DzkPnGIHFUzQ==
+# FTAjBgkqhkiG9w0BCQQxFgQUac66jZHXQ5F2+qJK+DbVi2/GowcwDQYJKoZIhvcN
+# AQEBBQAEggEAjcn6w5b8S1NjnMxY6E7YUxpmcx6dZVej3/fSguqqeg7Drm/tYsr4
+# aKXKqD/yJtXeRFh56uuFbWCnntHxisu+3grZzEmNzKP53Knt8LpWlEIr3BqJ26Iq
+# ZeBKcbuVDiQ5AlYn5ipr4Q8TWxxo/LfsR+eNQfdipuMHQCEANa4lA//eSR62Mj3N
+# vgjztLe0stitIS1lNQF2xZ/ZB8MuRL9w0N6n85KRw4+PxPx+TWHYe3nQ3GDlk9Gb
+# oWiy2SCv7dDC9lCnfLq7D0Wcu5aam4Xi7+88TqheH0eTEQDAYbln/E3ISQrCPC/Z
+# djoYVapGiU1aSnJVMJD3d1SRUY9oArrPHw==
 # SIG # End signature block
