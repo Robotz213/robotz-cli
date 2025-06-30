@@ -1,28 +1,38 @@
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("githubProject", "listProject", "exec")]
+    [ValidateSet("cdProject", "listProject", "exec")]
     [string]$comando,
 
-    [string]$path,
+    [string]$githubPath,
     [string]$comandoExec
 )
 
+$githubPath = "C:\\Github"
+
+$OsSystem = & python -c "import platform; print(platform.system())"
+
+$githubPath = if ($OsSystem -eq "Windows") {
+    "C:\\Github"
+}
+else {
+    "$HOME/Github"
+}
+
 function ChangeDir {
-    $path = "C:\\Github"
+    
     try {
-        Set-Location -Path $path
-        Write-Host utf8 "Accessing projects folder in: $(Get-Location)" 
+        Set-Location -Path $githubPath
+        Write-Host "Accessing projects folder in: $(Get-Location)" 
     }
     catch {
-        Write-Host  "Project folders do not exist, creating: $path"
-        New-Item -Path $path -ItemType Directory -Force | Out-Null
-        Set-Location -Path $path  
+        Write-Host  "Project folders do not exist, creating: $githubPath"
+        New-Item -Path $githubPath -ItemType Directory -Force | Out-Null
+        Set-Location -Path $githubPath  
         Write-Host  "Created and accessed projects folder in: $(Get-Location)"
     }
 }
 
 function ListProjetosGithub {
-    $githubPath = "C:\Github"
     if (-Not (Test-Path $githubPath)) {
         Write-Host "A pasta $githubPath não existe."
         return
@@ -61,7 +71,7 @@ if (-not $comando) {
 }
 
 switch ($comando) {
-    "githubProject" { ChangeDir -Path $path }
+    "cdProject" { ChangeDir -Path $githubPath }
     "listProject" { ListProjetosGithub }
 }
 
@@ -70,8 +80,8 @@ switch ($comando) {
 # SIG # Begin signature block
 # MIII5QYJKoZIhvcNAQcCoIII1jCCCNICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQURQzS6EUSBm46dfbAf//jUzwA
-# rA+gggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUab1SghCHxOK63PZrZ/v557bY
+# ZlCgggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
 # 9w0BAQsFADBPMRgwFgYKCZImiZPyLGQBGRYIaW50cmFuZXQxEzARBgoJkiaJk/Is
 # ZAEZFgNmbXYxHjAcBgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQTAeFw0yNTA2
 # MDIxNTAwNTVaFw0yNjA2MDIxNTAwNTVaMHAxGDAWBgoJkiaJk/IsZAEZFghpbnRy
@@ -109,11 +119,11 @@ switch ($comando) {
 # BgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQQITHgAAH9p7juDORnr5AQAAAAAf
 # 2jAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG
 # 9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIB
-# FTAjBgkqhkiG9w0BCQQxFgQUac66jZHXQ5F2+qJK+DbVi2/GowcwDQYJKoZIhvcN
-# AQEBBQAEggEAjcn6w5b8S1NjnMxY6E7YUxpmcx6dZVej3/fSguqqeg7Drm/tYsr4
-# aKXKqD/yJtXeRFh56uuFbWCnntHxisu+3grZzEmNzKP53Knt8LpWlEIr3BqJ26Iq
-# ZeBKcbuVDiQ5AlYn5ipr4Q8TWxxo/LfsR+eNQfdipuMHQCEANa4lA//eSR62Mj3N
-# vgjztLe0stitIS1lNQF2xZ/ZB8MuRL9w0N6n85KRw4+PxPx+TWHYe3nQ3GDlk9Gb
-# oWiy2SCv7dDC9lCnfLq7D0Wcu5aam4Xi7+88TqheH0eTEQDAYbln/E3ISQrCPC/Z
-# djoYVapGiU1aSnJVMJD3d1SRUY9oArrPHw==
+# FTAjBgkqhkiG9w0BCQQxFgQUd/Da/8vsCPf66AFCfJ0tdRJxdfwwDQYJKoZIhvcN
+# AQEBBQAEggEADwDsPXAOHDuE+MlpSkuK7fwxpmehvIdfHM5c324S51OHhd5/woB3
+# mH+BpnCFOBzWFnKSfP07ncKMYbItIlMrwU3A/8/SSO10wazPZObATCMR1vt7e7Jw
+# SHREroYkhfaEr0pb+a5omJGMyWJUd49Qohm/Z9oiN4P81Yn3RgOsLrVjJ4D8MQlV
+# F5tU6TPoBgPrRvFZf8vEjC1ONqh/3SgHDP7nRMnDhTSTLJf9PsuNXu/1bDFOkz6p
+# qONCdD0KQx3wD2R69AqSn28LucYruR+OejH11DhJiMdcYgu+FkC0PomoDJPcMlAI
+# Gc+vMxStx+aq7dciOq2tVdcRW+385GsFWw==
 # SIG # End signature block
