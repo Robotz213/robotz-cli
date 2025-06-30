@@ -7,7 +7,7 @@ param(
     [string]$comandoExec
 )
 
-function MudarDiretorio {
+function ChangeDir {
     $path = "C:\\Github"
     try {
         Set-Location -Path $path
@@ -31,7 +31,7 @@ function ExecutarComandoPersonalizado {
 }
 
 if (-not $comando) {
-    Write-Host "Uso:"
+    Write-Host "Usage:"
     Write-Host "  .\cli.ps1 cd <path>"
     Write-Host "  .\cli.ps1 ls"
     Write-Host "  .\cli.ps1 exec <comando>"
@@ -39,7 +39,7 @@ if (-not $comando) {
 }
 
 switch ($comando) {
-    "githubProject" { MudarDiretorio -Path $path }
+    "githubProject" { ChangeDir -Path $path }
 }
 
 
@@ -47,8 +47,8 @@ switch ($comando) {
 # SIG # Begin signature block
 # MIII5QYJKoZIhvcNAQcCoIII1jCCCNICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhzStYWKG+puJIiIQ0XYjZXJZ
-# KS2gggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU2j8wQ4B2XZx48EY6TeE0kjfc
+# KOKgggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
 # 9w0BAQsFADBPMRgwFgYKCZImiZPyLGQBGRYIaW50cmFuZXQxEzARBgoJkiaJk/Is
 # ZAEZFgNmbXYxHjAcBgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQTAeFw0yNTA2
 # MDIxNTAwNTVaFw0yNjA2MDIxNTAwNTVaMHAxGDAWBgoJkiaJk/IsZAEZFghpbnRy
@@ -86,11 +86,11 @@ switch ($comando) {
 # BgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQQITHgAAH9p7juDORnr5AQAAAAAf
 # 2jAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG
 # 9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIB
-# FTAjBgkqhkiG9w0BCQQxFgQUKoMWNjPmF5I7nhC1Y5LtAUeizt8wDQYJKoZIhvcN
-# AQEBBQAEggEAU7smlaMRmaa/Ge7PJnVE20LF9YHweqsXL0aSQYR7NgEXuZvNmkHh
-# hm/vwpLjpbBqj1vHh0rbhZ6qlYiQwgI6E0+YP/PZOsns7i0lYElmXc+ItxOap+hw
-# JA4y+TYgdHH24OR2M9iukihaalS/qZ1bnCHaxFySYLA9TWxfCm7os6QJ1CZl6fsV
-# aHxM2kCu9usTNMmv9czWdd6C6oiHo4MbOm/7kMAUlY684/UjSmn6WAFUmLkA4cVC
-# QQIh7TDNHJYKyq4wz7SmYY6cXTDtxPCTM4biVn2w0ZKmDhrxuGmqlraJKR9pmuB5
-# 7iOW185rCAWjPLPKHscdoMF+5MOp0SkKYQ==
+# FTAjBgkqhkiG9w0BCQQxFgQUC5bo6aMS6nM3pNojiIVndtUsTxQwDQYJKoZIhvcN
+# AQEBBQAEggEAQbVKP6VDWLlkecNqJciNG/oNN1+qfcFwR78SLBN/NqlcZeMeJdSM
+# rRcBdORIkVDxyAvfMP4TsqTLG9WZk3vV3aZ6WMFlhQf4rEzmtkUz1l6VP2nQbZ3+
+# BW2AEttvk7PNTcT8p3bcJwSbIG2yqbeKmFkVkmTuKMALEjW7mffdBaxTyk1+IBNw
+# XqpFDn7QLHi2hm8/U0HSIAP6/dD5V8cJGDsr2PjEQnM1S669H4d3/xaYAvfnBWz2
+# gmzQ4KszcbBAUDiy+OejxiAcU6Qdlicm9waOFwICx3Ry94AxypuGIEUBDV1sAokb
+# uRCvcdjQJDpKjzwwSd49G6DzkPnGIHFUzQ==
 # SIG # End signature block
