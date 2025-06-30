@@ -1,16 +1,13 @@
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("cdProject", "listProject", "exec")]
+    [ValidateSet("cdProject", "listProject", "mkProject")]
     [string]$comando,
-
-    [string]$githubPath,
-    [string]$comandoExec
-)
-
+    [string]$AdditionalParameter,
+    [string]$type,
+    [string]$projectName
+)   
 $githubPath = "C:\\Github"
-
 $OsSystem = & python -c "import platform; print(platform.system())"
-
 $githubPath = if ($OsSystem -eq "Windows") {
     "C:\\Github"
 }
@@ -19,9 +16,9 @@ else {
 }
 
 function ChangeDir {
-    
+    param([string]$Path)
     try {
-        Set-Location -Path $githubPath
+        Set-Location -Path $Path
         Write-Host "Accessing projects folder in: $(Get-Location)" 
     }
     catch {
@@ -70,9 +67,50 @@ if (-not $comando) {
     exit 1
 }
 
+
+function CreateProject {
+    param([string]$projectName)
+    ChangeDir -Path $githubPath
+    function CreateViteProject {
+        param([string]$projectName)
+        if (-Not $projectName) {
+            Write-Host "Usage: .\cli.ps1 mkProject <projectName>"
+            return
+        }
+        Invoke-Expression "npm create vite@latest $projectName -- --template vue-ts"
+    }
+
+    function CreatePoetryProject {
+        param([string]$projectName)
+        
+        if (-Not $projectName) {
+            Write-Host "Usage: .\cli.ps1 mkProject --type poetry <projectName>"
+            return
+        }
+        Invoke-Expression "poetry new $projectName"
+
+        Write-Host "Poetry project '$projectName' created successfully."
+    }
+
+    switch ($type) {
+        "vite" { CreateViteProject -projectName $projectName }
+        "poetry" { CreatePoetryProject -projectName $projectName }
+        Default { Write-Host "Unknown project type: $type" }
+    }
+
+
+}
+
 switch ($comando) {
     "cdProject" { ChangeDir -Path $githubPath }
     "listProject" { ListProjetosGithub }
+    "mkProject" {
+        if (-not $projectName) {
+            Write-Host "Usage: .\cli.ps1 mkProject --type <type> <projectName>"
+            return
+        }
+        CreateProject -projectName $projectName -type $type
+    }
 }
 
 
@@ -80,8 +118,8 @@ switch ($comando) {
 # SIG # Begin signature block
 # MIII5QYJKoZIhvcNAQcCoIII1jCCCNICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUab1SghCHxOK63PZrZ/v557bY
-# ZlCgggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU2LTIvI3kb88mdo8FcIbVnc97
+# +rygggZIMIIGRDCCBSygAwIBAgITHgAAH9p7juDORnr5AQAAAAAf2jANBgkqhkiG
 # 9w0BAQsFADBPMRgwFgYKCZImiZPyLGQBGRYIaW50cmFuZXQxEzARBgoJkiaJk/Is
 # ZAEZFgNmbXYxHjAcBgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQTAeFw0yNTA2
 # MDIxNTAwNTVaFw0yNjA2MDIxNTAwNTVaMHAxGDAWBgoJkiaJk/IsZAEZFghpbnRy
@@ -119,11 +157,11 @@ switch ($comando) {
 # BgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQQITHgAAH9p7juDORnr5AQAAAAAf
 # 2jAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG
 # 9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIB
-# FTAjBgkqhkiG9w0BCQQxFgQUd/Da/8vsCPf66AFCfJ0tdRJxdfwwDQYJKoZIhvcN
-# AQEBBQAEggEADwDsPXAOHDuE+MlpSkuK7fwxpmehvIdfHM5c324S51OHhd5/woB3
-# mH+BpnCFOBzWFnKSfP07ncKMYbItIlMrwU3A/8/SSO10wazPZObATCMR1vt7e7Jw
-# SHREroYkhfaEr0pb+a5omJGMyWJUd49Qohm/Z9oiN4P81Yn3RgOsLrVjJ4D8MQlV
-# F5tU6TPoBgPrRvFZf8vEjC1ONqh/3SgHDP7nRMnDhTSTLJf9PsuNXu/1bDFOkz6p
-# qONCdD0KQx3wD2R69AqSn28LucYruR+OejH11DhJiMdcYgu+FkC0PomoDJPcMlAI
-# Gc+vMxStx+aq7dciOq2tVdcRW+385GsFWw==
+# FTAjBgkqhkiG9w0BCQQxFgQUs8SDvo7Fbo3BGokvLm7cRlEZgdowDQYJKoZIhvcN
+# AQEBBQAEggEAo1mt7BXBRtHoV0ZawLOvYs2ytUVJJ4WvgZOKaxaBUt0GgosmrdfC
+# AsFUHcWkp/RIR3Lm6KVIbLl2pNDVaaZDacIQIcbwhVeWmLtMR/NWnS+efjLQPplU
+# Ife5zH5e8K1lYviTOnTqkdK8hImiyEI7Wl52t2tN6dKAdPLPhuxQ9yr1fySDH0Tp
+# 1aMbHWITh1Hyv1zNCg9g8fwQnyMQF12zfLLGWC+HwQ7/Nd/WtLJMX+GNGLza2Kj0
+# eHSobiteY1Y6HQY4kBzv/+nYlBjQ/xhAxtaeuqHTVLFK9Jgf8gCtJXv8zblMH82+
+# KmUYUKaxU2BPwEh0afD62Mzy7GzJkkFVOQ==
 # SIG # End signature block
